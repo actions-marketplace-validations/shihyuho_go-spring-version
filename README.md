@@ -36,7 +36,8 @@ jobs:
         uses: shihyuho/go-spring-version@v1
         with:
           dependencies: "cloud-starter"
-      - run: echo ${{ steps.get-spring-version.outputs.spring-boot }}, ${{ steps.get-spring-version.outputs.spring-cloud }}
+      - run: 'echo spring-boot: ${{ steps.get-spring-version.outputs.spring-boot }}'
+      - run: 'echo spring-cloud: ${{ steps.get-spring-version.outputs.spring-cloud }}'
 ```
 
 > See also: [Access context information in workflows and actions](https://docs.github.com/en/actions/learn-github-actions/contexts)

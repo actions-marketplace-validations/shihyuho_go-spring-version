@@ -42,4 +42,5 @@ jobs:
         uses: shihyuho/go-spring-version@main
         with:
           dependencies: "cloud-starter"
-      - run: 'echo spring-boot version = ${{ steps.get-spring-version.outputs.spring-boot }}, spring-cloud version = ${{ steps.get-spring-version.outputs.spring-cloud }}'
+      - run: 'echo spring-boot: ${{ steps.get-spring-version.outputs.spring-boot }}'
+      - run: 'echo spring-cloud: ${{ steps.get-spring-version.outputs.spring-cloud }}'

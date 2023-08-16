@@ -157,7 +157,7 @@ func run(c Config) (err error) {
 	}
 	for k, v := range project.Properties {
 		if strings.HasPrefix(k, "spring") {
-			if err = writef(c.Output, "%s=%s\n", k, v); err != nil {
+			if err = writef(c.Output, "%s=%s\n", strings.TrimSuffix(k, ".version"), v); err != nil {
 				return err
 			}
 		}
