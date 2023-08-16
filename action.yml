@@ -1,0 +1,33 @@
+# action.yml
+name: 'Fetch Spring Version in Go'
+description: 'Fetches the Spring version'
+branding:
+  icon: 'arrow-right-circle'
+  color: 'gray-dark'
+inputs:
+  boot-url:
+    description: 'URL of Spring Boot metadata'
+    required: false
+  starter-url:
+    description: 'URL of Starter metadata'
+    required: false
+  boot-version:
+    description: 'Spring Boot version, e.g. `x.y.z`, use current version if leave blank'
+    required: false
+  dependencies:
+    description: 'List of dependency identifiers to include in the generated project, can separate with commas'
+    required: false
+outputs:
+  spring-boot:
+    description: 'Spring Boot version'
+  spring-cloud:
+    description: 'Spring Cloud version'
+runs:
+  using: 'docker'
+  image: 'docker://ghcr.io/shihyuho/go-spring-version:1.0'
+  args:
+    - --boot-url=${{ inputs.boot-url }}
+    - --starter-url=${{ inputs.starter-url }}
+    - --boot-version=${{ inputs.boot-version }}
+    - --dependency=${{ inputs.dependencies }}
+    - --output=github
