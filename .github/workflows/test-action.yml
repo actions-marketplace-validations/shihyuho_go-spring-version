@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: spring-version
-        uses: shihyuho/go-spring-version@v1
+        uses: shihyuho/go-spring-version@main
         with:
           dependencies: "cloud-starter"
       - run: 'echo spring-boot version = ${{ steps.spring-version.spring-boot }}, spring-cloud version = ${{ steps.spring-version.spring-cloud }}'
