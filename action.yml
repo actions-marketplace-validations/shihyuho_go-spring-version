@@ -13,6 +13,10 @@ inputs:
     description: 'URL of Starter metadata'
     required: false
     default: "https://start.spring.io"
+  insecure:
+    description: 'true/false, Allow insecure metadata server connections when using SSL'
+    required: false
+    default: "false"
   boot-version:
     description: 'Spring Boot version, e.g. `x.y.z`, use current version if leave blank'
     required: false

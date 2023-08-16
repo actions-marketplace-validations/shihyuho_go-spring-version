@@ -1,6 +1,6 @@
 module github.com/shihyuho/go-spring-version
 
-go 1.18
+go 1.19
 
 require (
 	github.com/creekorful/mvnparser v1.5.0 // indirect

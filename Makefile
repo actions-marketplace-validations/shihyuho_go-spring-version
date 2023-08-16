@@ -3,7 +3,6 @@ HAS_BUILDPACKS := $(shell command -v pack;)
 OWNER := shihyuho
 REPO := go-spring-version
 
-PACK_BUILDER ?= paketobuildpacks/builder:tiny
 # GitHub PAT with write:packages scope: https://github.com/settings/tokens
 GH_PAT ?=
 # Image tag: https://github.com/shihyuho/go-spring-version/pkgs/container/go-spring-version
@@ -23,6 +22,9 @@ govet:	## Run go vet
 gofmt:	## Run gofmt
 	gofmt -s -w main.go
 
+build: ## Build app
+	 go build -o ./build/spring-version
+
 ##@ Delivery
 
 pack: bootstrap govet gofmt ## Create a runnable app image from source code
@@ -35,7 +37,7 @@ endif
 ifeq ($(strip $(TAG)),)
 	$(error TAG is required)
 endif
-	pack build ghcr.io/$(OWNER)/$(REPO):$(TAG) --builder $(PACK_BUILDER)
+	docker build --platform=linux/amd64 -t ghcr.io/$(OWNER)/$(REPO):$(TAG) .
 
 cr-login: ## To authenticate to the Container registry
 ifndef HAS_DOCKER
@@ -53,4 +55,6 @@ endif
 ifeq ($(strip $(TAG)),)
 	$(error TAG is required)
 endif
-	pack build ghcr.io/$(OWNER)/$(REPO):$(TAG) --builder $(PACK_BUILDER) --publish
+	docker build --platform=linux/amd64 -t ghcr.io/$(OWNER)/$(REPO):$(TAG) .
+	docker push ghcr.io/$(OWNER)/$(REPO):$(TAG)
+

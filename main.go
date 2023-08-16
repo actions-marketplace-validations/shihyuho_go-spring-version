@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -20,7 +21,7 @@ const (
 	defaultStarterMetadata = "https://start.spring.io"
 	defaultBootMetadata    = "https://api.spring.io/projects/spring-boot/releases"
 	defaultTypeID          = "maven-build"
-	desc                   = `This command fetches the Spring version.
+	desc                   = `This command get the Spring version.
 
 You can specify the '-b, --boot-version' flag to determine the Spring Boot version,
 or you can leave it blank to use the current version.
@@ -50,8 +51,9 @@ type Config struct {
 }
 
 type Metadata struct {
-	Starter string
-	Boot    string
+	Starter  string
+	Boot     string
+	Insecure bool
 }
 
 type StarterMetadata struct {
@@ -104,7 +106,7 @@ func main() {
 
 	cmd := &cobra.Command{
 		Use:          "spring-version",
-		Short:        "fetch Spring version",
+		Short:        "Get Spring version",
 		Long:         desc,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -115,6 +117,7 @@ func main() {
 	flags := cmd.Flags()
 	flags.StringVar(&c.Metadata.Starter, "starter-url", c.Metadata.Starter, "URL of Starter metadata")
 	flags.StringVar(&c.Metadata.Boot, "boot-url", c.Metadata.Boot, "URL of Spring Boot metadata")
+	flags.BoolVarP(&c.Metadata.Insecure, "insecure", "k", c.Metadata.Insecure, "Allow insecure metadata server connections when using SSL")
 	flags.StringVar(&c.TypeID, "type-id", c.TypeID, "Type ID of the action in Spring Boot metadata")
 	flags.StringVarP(&c.BootVersion, "boot-version", "b", c.BootVersion, "Spring Boot version")
 	flags.StringSliceVarP(&c.Dependencies, "dependency", "d", c.Dependencies, "List of dependency identifiers to include in the generated project")
@@ -128,7 +131,7 @@ func main() {
 func run(c Config) (err error) {
 	fmt.Printf("Fetching Spring Boot Metadata from %s\n", c.Metadata.Boot)
 	var boot BootMetadata
-	if err = fromJson(c.Metadata.Boot, &boot); err != nil {
+	if err = fromJson(c.Metadata.Boot, c.Metadata.Insecure, &boot); err != nil {
 		return err
 	}
 	if c.BootVersion, err = boot.getBootVersion(c.BootVersion); err != nil {
@@ -137,7 +140,7 @@ func run(c Config) (err error) {
 
 	fmt.Printf("Fetching Starter Metadata from %s\n", c.Metadata.Starter)
 	var starter StarterMetadata
-	if err = fromJson(c.Metadata.Starter, &starter); err != nil {
+	if err = fromJson(c.Metadata.Starter, c.Metadata.Insecure, &starter); err != nil {
 		return err
 	}
 	var action string
@@ -163,8 +166,11 @@ func run(c Config) (err error) {
 }
 
 // fromJson 從傳入 Metadata 取得 json string, 並轉讀入 v
-func fromJson(api string, v any) error {
-	response, err := http.Get(api)
+func fromJson(api string, insecure bool, v any) error {
+	client := &http.Client{Transport: &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: insecure},
+	}}
+	response, err := client.Get(api)
 	if err != nil {
 		return err
 	}
