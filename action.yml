@@ -1,9 +1,9 @@
 # action.yml
-name: 'Fetch Spring Version in Go'
-description: 'Fetches the Spring version'
+name: 'Get Spring Version in Go'
+description: 'Get Spring version'
 branding:
-  icon: 'arrow-right-circle'
-  color: 'gray-dark'
+  icon: 'git-branch'
+  color: 'green'
 inputs:
   boot-url:
     description: 'URL of Spring Boot metadata'
