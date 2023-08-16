@@ -8,11 +8,11 @@ inputs:
   boot-url:
     description: 'URL of Spring Boot metadata'
     required: false
-    default: "https://start.spring.io"
+    default: "https://api.spring.io/projects/spring-boot/releases"
   starter-url:
     description: 'URL of Starter metadata'
     required: false
-    default: "https://api.spring.io/projects/spring-boot/releases"
+    default: "https://start.spring.io"
   boot-version:
     description: 'Spring Boot version, e.g. `x.y.z`, use current version if leave blank'
     required: false
